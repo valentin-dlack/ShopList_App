@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <title>- Liste de courses -</title>
+        <script type="text/javascript">
+            var titleText = document.title;
+            
+            function titleMarquee() {
+            
+             titleText = titleText.substring(1, titleText.length) + titleText.substring(0, 1);
+             document.title = titleText;
+             setTimeout("titleMarquee()", 450);
+             }
+        </script>
+    </head>
+    <body onload="titleMarquee()">
+        <nav>
+            <div class=".nav-wrapper">
+                <a class="brand-logo center">Liste des articles</a>
+            </div>
+        </nav>
+    </body>
+    <ul></ul>
+
+    <script>
+        const electron = require('electron');
+        const { ipcRenderer } = electron;
+        const ul = document.querySelector('ul');
+
+        //item add funnc
+        ipcRenderer.on('item:add', function(e, item){
+            ul.className = 'collection';
+            const li = document.createElement('li');
+            li.className = "collection-item"
+            const itemData = document.createTextNode(item);
+            li.appendChild(itemData);
+            ul.appendChild(li);
+        });
+
+        //clear all items function
+        ipcRenderer.on('item:clear', function(){
+            ul.innerHTML = '';
+            ul.className = '';
+        })
+
+        //Delete single item
+        ul.addEventListener('dblclick', removeItem);
+
+        function removeItem(e){
+            e.target.remove();
+            if (ul.children.length == 0) {
+                ul.className = '';
+            }
+        }
+    </script>
+</html>
